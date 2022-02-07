@@ -2,7 +2,7 @@
 
 This is a project to build an AI voice assistant using Python. The Voice assistant interacts with the user to perform several tasks.
 
-### About Mily :
+## About Mily :
 
 <img src="www/image1.jpeg" style="display: block; margin: auto;" />
 
@@ -12,12 +12,7 @@ Mily is an AI personal voice assistant service built using Python. It can unders
 When the user specify the appropriate trigger words, the asistant will execute the user's command.
 
 
-G-One AI Voice assistant:"Loading your personal Assistant G-One....
-                          Hello, Good Morning" (Greets the user according to time)
-
-
-
-### Please see below for some of the tasks that this voice assistant can perform:
+## Please see below for some of the tasks that this voice assistant can perform:
 
 
 1. Get the weather of different cities
@@ -56,24 +51,22 @@ G-One AI Voice assistant:"Loading your personal Assistant G-One....
 		Human: Hey G-One, What is the capital of California? / Hey G-One what is Sin 90?
 		
 		
-### Libraries required to be installed using Pip Command:
-	
-	1.speech_recognition
-	
-	2.gtts
-	
-	3.playsound
-	
- 	4.requests
-	
-	5.yfinance
-	
-	6.Ecapture
-	
-	7.wolframalpha
-	
-	8.translators
+## Running on native machine
+### Dependencies
+* python3
+* portaudio (for recording with pyaudio to work)
+* [ctcdecode](https://github.com/parlance/ctcdecode) - for speechrecognition
 
+If you're on mac you can install `portaudio` using `homebrew`
+
+**NOTICE: If you are using windows, some things may not work. For example, torchaudio. I suggest trying this on linux or mac, or use wsl2 on windows**
+
+### using virtualenv (recommend)
+1. `virtualenv voiceassistant.venv`
+2. `source voiceassistant.venv/bin/activate`
+
+### pip packages
+`pip install -r requirements.txt` 
 
 ### In-Built libraries required to be imported:
 

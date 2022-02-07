@@ -1,0 +1,7 @@
+SpeechRecognition==3.8.1
+gTTS==2.2.3
+playsound==1.3.0
+requests==2.27.1
+yfinance==0.1.69
+wolframalpha==5.0.0
+translators==4.11.4
