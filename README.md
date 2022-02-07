@@ -4,7 +4,7 @@ This is a project to build an AI voice assistant using Python. The Voice assista
 
 ### About Mily :
 
-<img src="www/image1.png" style="display: block; margin: auto;" />
+<img src="www/image1.jpeg" style="display: block; margin: auto;" />
 
 
 Mily is an AI personal voice assistant service built using Python. It can understand human speech and perform basic tasks requested by the user.
