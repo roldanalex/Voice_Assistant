@@ -17,6 +17,7 @@ import translators as ts
 from VA_Tokens import crypto_api
 from VA_Tokens import wolframalpha_api
 from VA_Tokens import news_url
+from VA_Tokens import weather_api
 
 
 #### Voice Assistant Main Logic ####
@@ -33,6 +34,20 @@ def get_news():
     for i in range(5):
         print(news_headlines[i])
         mily_talk(news_headlines[i])
+
+## Get weather
+def get_weather():
+    mily_talk('Sure. What city are you interested on?')
+    weather_city = mily_listen()
+    print(weather_city)
+    weather_url = 'https://api.weatherbit.io/v2.0/current?city=' + weather_city + '&key=' + weather_api + '&units=I'
+    weather = requests.get(weather_url).json()
+    temperature = weather['data'][0]['temp']
+    description = weather['data'][0]['weather']['description']
+
+    weather_result = 'The current temperature in ' + weather_city + ' is ' + str(temperature) + ' degrees Fahrenheit with ' + str(description)
+    print(weather_result)
+    mily_talk(weather_result)
 
 ## Convert Speech to Txt
 def mily_listen():
@@ -161,6 +176,9 @@ def mily_reply(text):
     elif 'news' in text:
         mily_talk('Ok, these are the top 5 headlines in US')
         get_news()
+
+    elif 'weather' in text:
+        get_weather()
 
     # Exit talk
     else:
