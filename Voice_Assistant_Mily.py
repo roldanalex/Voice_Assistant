@@ -10,7 +10,8 @@ import requests
 import yfinance as yf
 import wolframalpha
 import translators as ts
-
+import wikipedia
+import datetime
 
 #### Load Tokens ####
 
@@ -21,6 +22,30 @@ from VA_Tokens import weather_api
 
 
 #### Voice Assistant Main Logic ####
+
+## Wikipedia
+def wikipedia_info():
+    mily_talk('Happy to help. What would you like to search in Wikipedia?')
+    wiki_listen = mily_listen()
+    wiki_results = wikipedia.summary(wiki_listen, sentences = 2)
+    print(wiki_results)
+    mily_talk(wiki_results)
+
+## Date / Time
+def time_now():
+    today_date = datetime.datetime.now()
+    hour = today_date.strftime("%I")
+    minute = today_date.strftime("%M")
+    meridiem = today_date.strftime("%p")
+    time_now = 'The current time is ' + hour + ':' + minute + ' ' + meridiem
+    print(time_now)
+    mily_talk(time_now)
+
+## Week now
+def weekday_now():
+    week_today = datetime.datetime.now().strftime("%A")
+    print(week_today)
+    mily_talk(week_today)
 
 ## Get top US news
 def get_news():
@@ -177,8 +202,20 @@ def mily_reply(text):
         mily_talk('Ok, these are the top 5 headlines in US')
         get_news()
 
+    # Weather
     elif 'weather' in text:
         get_weather()
+
+    # Wikipedia    
+    elif 'wikipedia' in text:
+        wikipedia_info()
+
+    # Time now
+    elif 'time' in text:
+        time_now()
+
+    elif 'weekday' or 'day of the week' or 'day' in text:
+        weekday_now()
 
     # Exit talk
     else:
