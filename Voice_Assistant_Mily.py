@@ -1,17 +1,17 @@
 
 #### Load Library ####
 
-from email.mime import audio
+import os
 import speech_recognition as sr
 from gtts import gTTS
 import playsound
-import os
 import requests
 import yfinance as yf
 import wolframalpha
 import translators as ts
 import wikipedia
 import datetime
+import streamlit as st
 
 #### Load Tokens ####
 
@@ -22,6 +22,9 @@ from VA_Tokens import weather_api
 
 
 #### Voice Assistant Main Logic ####
+
+# Global GUI reference
+gui_app = None
 
 ## Wikipedia
 def wikipedia_info():
@@ -65,6 +68,7 @@ def get_weather():
     mily_talk('Sure. What city are you interested on?')
     weather_city = mily_listen()
     print(weather_city)
+    if gui_app: gui_app.log(f"Searching for: {weather_city}", "system")
     weather_url = 'https://api.weatherbit.io/v2.0/current?city=' + weather_city + '&key=' + weather_api + '&units=I'
     weather = requests.get(weather_url).json()
     temperature = weather['data'][0]['temp']
@@ -81,6 +85,7 @@ def mily_listen():
 
     with sr.Microphone() as source:
 
+        if gui_app: gui_app.set_state("listening")
         r.adjust_for_ambient_noise(source, duration=0.3)
 
         audio = r.listen(source)
@@ -98,12 +103,15 @@ def mily_listen():
         except sr.WaitTimeoutError as wte:
             print(wte)
 
+    if gui_app: gui_app.set_state("processing")
     text = text.lower()
-
+    if gui_app and text: gui_app.log(text, "user")
     return text
 
 ## Convert Txt to Speech (English)
 def mily_talk(text):
+    if gui_app: gui_app.set_state("speaking")
+    if gui_app: gui_app.log(text, "mily")
     # creates an audio file to store talk
     file_raw = 'audio_raw.mp3'
 
@@ -112,9 +120,12 @@ def mily_talk(text):
 
     playsound.playsound(file_raw)
     os.remove(file_raw)
+    if gui_app: gui_app.set_state("idle")
 
 ## Convert Txt to Speech (Spanish)
 def mily_talk_es(text):
+    if gui_app: gui_app.set_state("speaking")
+    if gui_app: gui_app.log(text, "mily")
     # creates an audio file to store talk
     file_raw = 'audio_raw.mp3'
 
@@ -123,6 +134,7 @@ def mily_talk_es(text):
 
     playsound.playsound(file_raw)
     os.remove(file_raw)
+    if gui_app: gui_app.set_state("idle")
 
 ## Create a reply function based on text (user request)
 def mily_reply(text):
@@ -214,7 +226,7 @@ def mily_reply(text):
     elif 'time' in text:
         time_now()
 
-    elif 'weekday' or 'day of the week' or 'day' in text:
+    elif 'weekday' in text or 'day of the week' in text or 'day' in text:
         weekday_now()
 
     # Exit talk
@@ -239,7 +251,54 @@ def execute_app():
         if 'stop' in listen_mily:
             break
 
-# Execute assistant
-execute_app()
+#### Streamlit Interface ####
 
-#### Test Area ####
+class StreamlitInterface:
+    def __init__(self, status_placeholder, chat_placeholder):
+        self.status_placeholder = status_placeholder
+        self.chat_placeholder = chat_placeholder
+        if 'chat_history' not in st.session_state:
+            st.session_state.chat_history = []
+
+    def log(self, message, source="system"):
+        prefix = ""
+        if source == "user": prefix = "👤 **You**: "
+        elif source == "mily": prefix = "🤖 **Mily**: "
+        else: prefix = "*System*: "
+        
+        entry = f"{prefix}{message}"
+        st.session_state.chat_history.append(entry)
+        
+        # Keep only last 15 messages to prevent clutter
+        if len(st.session_state.chat_history) > 15:
+            st.session_state.chat_history.pop(0)
+            
+        self.chat_placeholder.markdown("\n\n".join(st.session_state.chat_history))
+
+    def set_state(self, state):
+        self.status_placeholder.info(f"Status: {state.capitalize()}")
+
+def main():
+    st.set_page_config(page_title="Mily Voice Assistant", page_icon="🎙️")
+    st.title("🎙️ Mily Voice Assistant")
+    st.markdown("Click **Start** to begin. Say **'Stop'** to end the session.")
+    
+    # Layout
+    status_area = st.empty()
+    chat_area = st.empty()
+    
+    # Initialize global gui_app
+    global gui_app
+    gui_app = StreamlitInterface(status_area, chat_area)
+    
+    # Initial Chat Render
+    if 'chat_history' in st.session_state and st.session_state.chat_history:
+        chat_area.markdown("\n\n".join(st.session_state.chat_history))
+    
+    # Controls
+    if st.button("Start Listening", type="primary"):
+        with st.spinner("Mily is active..."):
+            execute_app()
+
+if __name__ == "__main__":
+    main()

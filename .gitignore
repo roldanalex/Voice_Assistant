@@ -2,3 +2,9 @@ __pycache__/
 VA_Tokens.py
 VA_Tokens.pyc
 .DS_Store
+audio_raw.mp3
+build/
+dist/
+*.spec
+*.venv
+voiceassistant.venv/
