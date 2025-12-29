@@ -5,7 +5,7 @@
 
 ## Overview
 
-**Mily** is an intelligent personal voice assistant built with Python. Designed to provide a hands-free experience, Mily understands human speech and executes a variety of tasks ranging from fetching real-time financial data to translating languages.
+**Mily** is an intelligent voice assistant built with Python that integrates WolframAlpha, Wikipedia, and financial APIs to provide hands-free access to information through a modern web dashboard. Designed to provide a seamless experience, Mily understands human speech and executes a variety of tasks ranging from fetching real-time financial data to translating languages.
 
 <img src="www/image1.jpeg" style="display: block; margin: auto;" width="400" />
 
